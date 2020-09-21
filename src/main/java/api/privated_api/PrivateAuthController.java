@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,7 +53,9 @@ public class PrivateAuthController {
 	 * @param username
 	 * @return
 	 */
-	@PostMapping(value = "create")
+	@PostMapping(value = "create",
+			consumes = MediaType.APPLICATION_JSON_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> createOrder(@Valid @RequestBody OrderDTO dto, @CurrentSecurityContext(expression = "authentication.name") String username) {
 
 		OperationResult<Order, OrderService> created;
@@ -80,7 +84,8 @@ public class PrivateAuthController {
 	 * 
 	 * @return list of orders
 	 */
-	@GetMapping(value = "myOrders")
+	@GetMapping(value = "myOrders",
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OrderDTO>> allOrders(@CurrentSecurityContext(expression = "authentication.name") String username) {
 		List<OrderDTO> result = new ArrayList<OrderDTO>();
 		
@@ -96,9 +101,15 @@ public class PrivateAuthController {
 	 * Default operation for check if Controller is working
 	 * @return
 	 */
-	@GetMapping(value = "info")
+	@GetMapping(value = "info",
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> info() {
 		return new ResponseEntity<String>(this + " is running", HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(RuntimeException.class)
+	public final ResponseEntity<Exception> handleAllExceptions(RuntimeException ex) {
+		return new ResponseEntity<Exception>(ex, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

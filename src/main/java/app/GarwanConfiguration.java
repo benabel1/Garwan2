@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import api.privated_api.PrivateAdminController;
 import api.privated_api.PrivateAuthController;
 import api.public_api.PublicProductEndpoint;
-import api.public_api.PublicUserRegistrationEndpoint;
+import api.public_api.PublicUserRegistrationController;
 
 
 @SpringBootConfiguration
@@ -29,8 +29,8 @@ public class GarwanConfiguration {
 	}
 	
 	@Bean
-	PublicUserRegistrationEndpoint publicUsersController() {
-		return new PublicUserRegistrationEndpoint();
+	PublicUserRegistrationController publicUsersController() {
+		return new PublicUserRegistrationController();
 	}
 	
 	@Bean

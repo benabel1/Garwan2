@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +47,10 @@ public class PrivateAdminController {
 	@Autowired
 	UserRepositary repo;
 
-	@PostMapping(value = "addProduct")
+	@PostMapping(
+			value = "addProduct",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> createProduct(@RequestBody ProductDTO dto) {
 
 		Product p = ProductMapper.code(dto);
@@ -56,30 +61,40 @@ public class PrivateAdminController {
 		return new ResponseEntity<String>(newDTO + " was craeted for: ", HttpStatus.OK);
 	}
 
-	@GetMapping(value = "allProducts")
+	@GetMapping(
+			value = "allProducts", 
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<ProductDTO>> allProducts() {
 		List<ProductDTO> result = productService.getAllProducts();
 
 		return new ResponseEntity<List<ProductDTO>>(result, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "allOrders")
+	@GetMapping(
+			value = "allOrders", 
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OrderDTO>> allOrders() {
 		List<OrderDTO> result = orderService.getAllOrders();
 
 		return new ResponseEntity<List<OrderDTO>>(result, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "allUsers")
+	@GetMapping(value = "allUsers", 
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<UserDTO>> allUsers() {
 		List<UserDTO> result = userService.getAllUsers();
 
 		return new ResponseEntity<List<UserDTO>>(result, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "info")
+	@GetMapping(value = "info", 
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> info() {
 		return new ResponseEntity<String>(this + " is running", HttpStatus.OK);
 	}
 
+	@ExceptionHandler(RuntimeException.class)
+	public final ResponseEntity<Exception> handleAllExceptions(RuntimeException ex) {
+		return new ResponseEntity<Exception>(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }

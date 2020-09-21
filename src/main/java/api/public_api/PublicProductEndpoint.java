@@ -2,18 +2,22 @@ package api.public_api;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import api.privated_api.PrivateAdminController;
 import data.Product;
 import dto.ProductDTO;
 import dto.ProductOnlyFewColumn;
@@ -24,6 +28,8 @@ import services.ProductService;
 @RequestMapping(value = "/public/products")
 public class PublicProductEndpoint {
 	
+	Logger logger = LoggerFactory.getLogger(PublicProductEndpoint.class);
+	
 	@Autowired
 	ProductService service;
 
@@ -32,7 +38,9 @@ public class PublicProductEndpoint {
 		return service.getProductById(id);
 	}
 	
-	@GetMapping(value = "all")
+	@GetMapping(value = "all",
+			consumes = MediaType.APPLICATION_JSON_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<ProductOnlyFewColumn> allProducts(
 			@RequestParam("page") Optional<Integer> page,
 			@RequestParam("pageSize") Optional<Integer> pageSize,
@@ -51,7 +59,9 @@ public class PublicProductEndpoint {
 		return aa;
 	}
 	
-	@GetMapping(value = "filterMinMax")
+	@GetMapping(value = "filterMinMax",
+			consumes = MediaType.APPLICATION_JSON_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<ProductOnlyFewColumn> allProductsWithPriceInRangeMinMax(
 			@RequestParam("page") Optional<Integer> page,
 			@RequestParam("pageSize") Optional<Integer> pageSize,
@@ -72,9 +82,14 @@ public class PublicProductEndpoint {
 		return resultWithHiddenColumns;
 	}
 	
-	@GetMapping(value = "info")
+	@GetMapping(value = "info",
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> info() {
 		return new ResponseEntity<String>(this + " is running", HttpStatus.OK);
 	}
 	
+	@ExceptionHandler(RuntimeException.class)
+	public final ResponseEntity<Exception> handleAllExceptions(RuntimeException ex) {
+		return new ResponseEntity<Exception>(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }
