@@ -53,10 +53,10 @@ public class PrivateAdminController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> createProduct(@RequestBody ProductDTO dto) {
 
-		Product p = ProductMapper.code(dto);
+		Product p = ProductMapper.fromDTO(dto);
 		p = productService.create(p);
 		logger.info("New product was created " + p);
-		ProductDTO newDTO = ProductMapper.decode(p);
+		ProductDTO newDTO = ProductMapper.toDTO(p);
 		
 		return new ResponseEntity<String>(newDTO + " was craeted for: ", HttpStatus.OK);
 	}

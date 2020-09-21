@@ -13,7 +13,7 @@ public class OrderItemMapper {
 	
 	static Logger logger = LoggerFactory.getLogger(PrivateAdminController.class);
 
-	public static OrderItemDTO decode(OrderItem item) {
+	public static OrderItemDTO toDTO(OrderItem item) {
 		OrderItemDTO dto = new OrderItemDTO();
 		
 		if(item == null) {
@@ -22,15 +22,15 @@ public class OrderItemMapper {
 		}
 		
 		dto.setOrderItemID(item.getOrderItemID());
-		dto.setProduct(ProductMapper.decode(item.getProduct()));
-		dto.setOrder(OrderMapper.decode(item.getOrder()));
+		dto.setProduct(ProductMapper.toDTO(item.getProduct()));
+		dto.setOrder(OrderMapper.toDTO(item.getOrder()));
 		dto.setCount(item.getCount());
 		dto.setPrice(item.getPrice());
 
 		return dto ;
 	}
 
-	public static OrderItem code(OrderItemDTO dto) {
+	public static OrderItem fromDTO(OrderItemDTO dto) {
 		OrderItem item = new OrderItem();
 		
 		if (dto == null) {
@@ -38,8 +38,8 @@ public class OrderItemMapper {
 		}
 		
 		item.setOooID(dto.getOrderItemID());
-		item.setProduct(ProductMapper.code(dto.getProduct()));
-		item.setOrder(OrderMapper.code(dto.getOrderr()));
+		item.setProduct(ProductMapper.fromDTO(dto.getProduct()));
+		item.setOrder(OrderMapper.fromDTO(dto.getOrderr()));
 		item.setCount(dto.getCount());
 		item.setPrice(dto.getPrice());
 

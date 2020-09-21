@@ -28,7 +28,7 @@ public class OrderMapper {
 	 * @param order
 	 * @return
 	 */
-	public static OrderDTO decode(Order order) {
+	public static OrderDTO toDTO(Order order) {
 		OrderDTO dto = new OrderDTO();
 
 		if (order == null) {
@@ -40,7 +40,7 @@ public class OrderMapper {
 		dto.setOrderId(order.getOrderId());
 		dto.setTotalPrice(order.getTotalPrice());
 		dto.setCreatedDate(order.getTime());
-		dto.setUser(UserMaper.decode(order.getUserr()));
+		dto.setUser(UserMaper.toDTO(order.getUserr()));
 		
 		if (order.getList() == null) {
 			dto.setList(null);
@@ -49,7 +49,7 @@ public class OrderMapper {
 			
 			for (OrderItem item: order.getList()) {
 				if(item != null) {
-					dto.getList().add(OrderItemMapper.decode(item));
+					dto.getList().add(OrderItemMapper.toDTO(item));
 				}
 			}
 		}
@@ -62,7 +62,7 @@ public class OrderMapper {
 	 * @param dto
 	 * @return
 	 */
-	public static Order code(OrderDTO dto) {
+	public static Order fromDTO(OrderDTO dto) {
 		Order order = new Order();
 
 		if (dto == null) {
@@ -73,7 +73,7 @@ public class OrderMapper {
 		order.setOrderId(dto.getOrderId());
 		order.setTotalPrice(dto.getTotalPrice());
 		order.setTime(dto.getCreatedDate());
-		order.setUserr(UserMaper.code(dto.getUser()));
+		order.setUserr(UserMaper.toDTO(dto.getUser()));
 		
 		if(dto.getList() == null) {
 			order.setList(null);
@@ -82,7 +82,7 @@ public class OrderMapper {
 			
 			for (OrderItemDTO itemDto: dto.getList()) {
 				if(itemDto != null) {
-					order.getList().add(OrderItemMapper.code(itemDto));
+					order.getList().add(OrderItemMapper.fromDTO(itemDto));
 				}
 			}
 		}

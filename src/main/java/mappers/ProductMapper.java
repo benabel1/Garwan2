@@ -22,14 +22,14 @@ public class ProductMapper {
 	 * @param userDTO
 	 * @return
 	 */
-	public static Product code(ProductDTO userDTO) {
+	public static Product fromDTO(ProductDTO userDTO) {
 		Product product = new Product();
 		
 		product.setPrice(userDTO.getPrice());
-		product.setAnimalCategory(AnimalCategoryMapper.code(userDTO.getAnimalCategoryDTO()));
+		product.setAnimalCategory(AnimalCategoryMapper.fromDTO(userDTO.getAnimalCategoryDTO()));
 		product.setDesription(userDTO.getDecription());
 		
-		product.setGallery(mapGalleryLinks(userDTO, product));
+		product.setGallery(mapGalleryLinksFromDTO(userDTO, product));
 		
 		return product;
 	}
@@ -40,13 +40,13 @@ public class ProductMapper {
 	 * @param user
 	 * @return
 	 */
-	public static ProductDTO decode(Product product) {
+	public static ProductDTO toDTO(Product product) {
 		ProductDTO dto = new ProductDTO();
 		
 		dto.setId(product.getProductID());
 		dto.setName(product.getName());
 		dto.setPrice(product.getPrice());
-		dto.setAnimalCategoryDTO(AnimalCategoryMapper.decode(product.getAnimalCategory()));
+		dto.setAnimalCategoryDTO(AnimalCategoryMapper.toDTO(product.getAnimalCategory()));
 		dto.setDecription(product.getDesription());
 		
 		return dto;
@@ -58,7 +58,7 @@ public class ProductMapper {
 	 * @param product
 	 * @return
 	 */
-	private static List<Links> mapGalleryLinks(ProductDTO userDTO, Product product) {
+	private static List<Links> mapGalleryLinksFromDTO(ProductDTO userDTO, Product product) {
 		List<Links> links = new ArrayList<Links>();
 		
 		if (userDTO == null) {
@@ -86,7 +86,7 @@ public class ProductMapper {
 
 	public static ProductOnlyFewColumn mapFor(Product product) {
 		
-		return new ProductOnlyFewColumn(ProductMapper.decode(product));
+		return new ProductOnlyFewColumn(ProductMapper.toDTO(product));
 	}
 
 }

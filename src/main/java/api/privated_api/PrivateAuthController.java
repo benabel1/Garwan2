@@ -76,6 +76,35 @@ public class PrivateAuthController {
 
 		return new ResponseEntity<String>(created + " was craeted for: ", HttpStatus.OK);
 	}
+	
+	/**
+	 * Create new order for logged user
+	 * 
+	 * @param dto
+	 * @param username
+	 * @return
+	 */
+	@PostMapping(value = "createNonSecure",
+			consumes = MediaType.APPLICATION_JSON_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> createOrderNoneUser(@RequestBody OrderDTO dto) {
+
+		OperationResult<Order, OrderService> created;
+
+		created =  orderService.createOrder(dto, null);
+
+		return new ResponseEntity<String>(created + " was craeted for: ", HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "createNonSecure2",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> createOrderNoneUser() {
+
+		OperationResult<Order, OrderService> created = null;
+
+
+		return new ResponseEntity<String>(created + " was craeted for: ", HttpStatus.OK);
+	}
 
 	/**
 	 * Return all order created by current authenticated user

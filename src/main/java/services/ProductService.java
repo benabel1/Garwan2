@@ -34,14 +34,14 @@ public class ProductService {
 	}
 
 	public ProductDTO getProductById(Long id) {
-		return ProductMapper.decode(productRepo.findById(id).orElseGet(null));
+		return ProductMapper.toDTO(productRepo.findById(id).orElseGet(null));
 	}
 
 	public List<ProductDTO> getAllProducts() {
 		List<ProductDTO> products = new ArrayList<ProductDTO>();
 		
 		for (Product product : productRepo.findAll()) {
-			products.add(ProductMapper.decode(product));
+			products.add(ProductMapper.toDTO(product));
 		}
 		
 		return products;

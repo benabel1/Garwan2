@@ -12,7 +12,7 @@ public class AnimalCategoryMapper {
 	
 	static Logger logger = LoggerFactory.getLogger(AnimalCategoryMapper.class);
 
-	public static AnimalCategory code(AnimalCategoryDTO a) {
+	public static AnimalCategory fromDTO(AnimalCategoryDTO a) {
 		
 		if(a == null || a.getString() == null) {
 			logger.info("AnimalCategory was NULL");
@@ -22,7 +22,7 @@ public class AnimalCategoryMapper {
 		return AnimalCategory.valueOf(a.getString());
 	}
 	
-	public static AnimalCategoryDTO decode(AnimalCategory a) {
+	public static AnimalCategoryDTO toDTO(AnimalCategory a) {
 		return new AnimalCategoryDTO(a);
 	}
 }

@@ -30,7 +30,7 @@ public class OrderService {
 		
 		try {
 			for (Order o : orderRepositary.findAll()) {
-				orders.add(OrderMapper.decode(o));
+				orders.add(OrderMapper.toDTO(o));
 			}
 		}
 		catch (Exception e) {
@@ -42,7 +42,7 @@ public class OrderService {
 
 	public OperationResult<Order, OrderService> createOrder(OrderDTO dto, Garwan_User user) {
 		
-		Order order = OrderMapper.code(dto);
+		Order order = OrderMapper.fromDTO(dto);
 		
 		if(order == null || user == null) {
 			return new OperationResult<Order, OrderService>(order, false, false, this);
@@ -61,7 +61,7 @@ public class OrderService {
 		
 		for (Order order : userOrders) {
 			if(order != null) {
-				ordersByUser.add(OrderMapper.decode(order));
+				ordersByUser.add(OrderMapper.toDTO(order));
 			}
 		}
 		

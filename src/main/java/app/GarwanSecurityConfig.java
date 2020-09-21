@@ -55,9 +55,9 @@ public class GarwanSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				.antMatchers("/**").permitAll()
 				//allow all public API, swagger API and H2 embedded runtime database
-				.antMatchers("/h2-console/**", "/public/**", "/v2/api-docs").permitAll()
+				.antMatchers("auth/**","/h2-console/**", "/public/**", "/v2/api-docs").permitAll()
 				.antMatchers("/admin/**").hasAnyRole("ADMIN")
-				.antMatchers("auth/orders/**").authenticated()
+//				.antMatchers("auth/**").authenticated()
 				.anyRequest().authenticated()
 //				.and()
 //				.formLogin()

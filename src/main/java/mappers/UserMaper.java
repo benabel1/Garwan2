@@ -17,7 +17,7 @@ public class UserMaper {
 	 * @param dto
 	 * @return
 	 */
-	public static Garwan_User code(UserDTO dto) {
+	public static Garwan_User toDTO(UserDTO dto) {
 		if(dto == null) {
 			logger.info("UserDTO was null at start of mapping!");
 			return null;
@@ -36,7 +36,7 @@ public class UserMaper {
 	 * @param user
 	 * @return
 	 */
-	public static UserDTO decode(Garwan_User user) {
+	public static UserDTO toDTO(Garwan_User user) {
 		if (user == null) {
 			logger.info("User was null at start of mapping!");
 			return null;
