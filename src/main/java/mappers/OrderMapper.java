@@ -40,7 +40,7 @@ public class OrderMapper {
 		dto.setOrderId(order.getOrderId());
 		dto.setTotalPrice(order.getTotalPrice());
 		dto.setCreatedDate(order.getTime());
-		dto.setUser(UserMaper.toDTO(order.getUserr()));
+		dto.setUser(getUserId(order));
 		
 		if (order.getList() == null) {
 			dto.setList(null);
@@ -49,12 +49,16 @@ public class OrderMapper {
 			
 			for (OrderItem item: order.getList()) {
 				if(item != null) {
-					dto.getList().add(OrderItemMapper.toDTO(item));
+					dto.getList().add(OrderItemMapper.toDTO(item, dto));
 				}
 			}
 		}
 
 		return dto;
+	}
+
+	private static String getUserId(Order order) {
+		return (order != null)? order.getUserr().getUsername(): "";
 	}
 
 	/**
@@ -73,7 +77,7 @@ public class OrderMapper {
 		order.setOrderId(dto.getOrderId());
 		order.setTotalPrice(dto.getTotalPrice());
 		order.setTime(dto.getCreatedDate());
-		order.setUserr(UserMaper.toDTO(dto.getUser()));
+		order.setUserr(null);
 		
 		if(dto.getList() == null) {
 			order.setList(null);
@@ -82,7 +86,7 @@ public class OrderMapper {
 			
 			for (OrderItemDTO itemDto: dto.getList()) {
 				if(itemDto != null) {
-					order.getList().add(OrderItemMapper.fromDTO(itemDto));
+					order.getList().add(OrderItemMapper.fromDTO(itemDto, order));
 				}
 			}
 		}

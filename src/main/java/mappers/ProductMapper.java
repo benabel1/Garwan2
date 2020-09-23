@@ -19,23 +19,30 @@ public class ProductMapper {
 
 	/**
 	 * 
-	 * @param userDTO
+	 * @param dto
 	 * @return
 	 */
-	public static Product fromDTO(ProductDTO userDTO) {
+	public static Product fromDTO(ProductDTO dto) {
 		Product product = new Product();
 		
-		product.setPrice(userDTO.getPrice());
-		product.setAnimalCategory(AnimalCategoryMapper.fromDTO(userDTO.getAnimalCategoryDTO()));
-		product.setDesription(userDTO.getDecription());
+		if (dto == null) {
+			return null;
+		}
 		
-		product.setGallery(mapGalleryLinksFromDTO(userDTO, product));
+		product.setProductID(dto.getId());
+		product.setName(dto.getName());
+		product.setPrice(dto.getPrice());
+		product.setAnimalCategory(AnimalCategoryMapper.fromDTO(dto.getAnimalCategoryDTO()));
+		product.setDesription(dto.getDecription());
+		
+		product.setGallery(mapGalleryLinksFromDTO(dto, product));
 		
 		return product;
 	}
 	
 	
 	/**
+	 * Transform into DTO product object 
 	 * 
 	 * @param user
 	 * @return
@@ -43,14 +50,36 @@ public class ProductMapper {
 	public static ProductDTO toDTO(Product product) {
 		ProductDTO dto = new ProductDTO();
 		
+		if (product == null) {
+			return null;
+		}
+		
 		dto.setId(product.getProductID());
 		dto.setName(product.getName());
 		dto.setPrice(product.getPrice());
 		dto.setAnimalCategoryDTO(AnimalCategoryMapper.toDTO(product.getAnimalCategory()));
+		dto.setGallery(mapLinksToDTO(product));
 		dto.setDecription(product.getDesription());
 		
 		return dto;
 	}
+	private static List<String> mapLinksToDTO(Product product) {
+		List<String> urls = new ArrayList<String>();
+		
+		if(product == null) {
+			return urls;
+		}
+		
+		for(Links a : product.getGallery()) {
+			if (a != null && a.getUrl()!= null) {
+				urls.add(a.getUrl());
+			}
+		}
+		
+		return urls;
+	}
+
+
 	/**
 	 * Mapping product links
 	 * 
@@ -77,15 +106,20 @@ public class ProductMapper {
 			
 			Links newLinks = new Links();
 			newLinks.setProduct_image(product);
+			newLinks.setUrl(string);
 			links.add(newLinks);
 		}
 		
 		return links;
 	}
 
-
+	/**
+	 * Mapping into ProductOnlyFewColum that is projection only few columns
+	 * 
+	 * @param product
+	 * @return
+	 */
 	public static ProductOnlyFewColumn mapFor(Product product) {
-		
 		return new ProductOnlyFewColumn(ProductMapper.toDTO(product));
 	}
 
