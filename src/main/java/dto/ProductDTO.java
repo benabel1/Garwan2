@@ -1,17 +1,32 @@
 package dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ProductDTO {
-	long id;
-	String name;
-	double price;
+	private long id;
+	private String name;
+	private BigDecimal price;
 	
-	AnimalCategoryDTO animalCategoryDTO;
+	private AnimalCategoryDTO animalCategoryDTO;
 	
-	String decription;
+	private String decription;
 	
-	List<String> gallery;
+	private List<String> gallery;
+
+	public ProductDTO() {
+		super();
+	}
+
+	public ProductDTO(long id, String name, BigDecimal price, AnimalCategoryDTO animalCategoryDTO, String decription, List<String> gallery) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.animalCategoryDTO = animalCategoryDTO;
+		this.decription = decription;
+		this.gallery = gallery;
+	}
 
 	public long getId() {
 		return id;
@@ -29,12 +44,20 @@ public class ProductDTO {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public AnimalCategoryDTO getAnimalCategoryDTO() {
+		return animalCategoryDTO;
+	}
+
+	public void setAnimalCategoryDTO(AnimalCategoryDTO animalCategoryDTO) {
+		this.animalCategoryDTO = animalCategoryDTO;
 	}
 
 	public String getDecription() {
@@ -45,14 +68,6 @@ public class ProductDTO {
 		this.decription = decription;
 	}
 
-	public AnimalCategoryDTO getAnimalCategoryDTO() {
-		return animalCategoryDTO;
-	}
-
-	public void setAnimalCategoryDTO(AnimalCategoryDTO animalCategoryDTO) {
-		this.animalCategoryDTO = animalCategoryDTO;
-	}
-	
 	public List<String> getGallery() {
 		return gallery;
 	}
@@ -60,7 +75,6 @@ public class ProductDTO {
 	public void setGallery(List<String> gallery) {
 		this.gallery = gallery;
 	}
-	
-	
 
+	
 }

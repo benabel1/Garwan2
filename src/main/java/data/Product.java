@@ -1,16 +1,20 @@
 package data;
 
-
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.PositiveOrZero;
+
+import org.hibernate.validator.cfg.defs.DigitsDef;
 
 @Entity
 @Table(name = "product_table")
@@ -21,6 +25,7 @@ public class Product {
 
 	@Id
 	@Column(name = "product_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long productID;
 	
 	@Column(name = NAME_COLUMN_NAME)
@@ -28,7 +33,7 @@ public class Product {
 	
 	@Column(name = PRICE_COLUMN_NAME)
 	@PositiveOrZero
-	private double price;
+	private BigDecimal price;
 	
 	@Enumerated(EnumType.STRING)
 	private AnimalCategory animalCategory;
@@ -36,8 +41,36 @@ public class Product {
 	@Column(name = DESCRIBTION_COLUMN_NAME)
 	String description;
 	
-	@OneToMany(mappedBy = "product_image", orphanRemoval = true)
+	//TODO:  
+//	@OneToMany(mappedBy = "product_image", orphanRemoval = true)
+	@OneToMany(mappedBy = "product_image")
 	List<Links> gallery;
+	
+	public Product() {
+		super();
+	}
+	
+	
+	/**
+	 * 
+	 * @param productID
+	 * @param name
+	 * @param price
+	 * @param animalCategory
+	 * @param description
+	 * @param gallery
+	 */
+	public Product(long productID, String name, @PositiveOrZero BigDecimal price, AnimalCategory animalCategory, String description, List<Links> gallery) {
+		super();
+		this.productID = productID;
+		this.name = name;
+		this.price = price;
+		this.animalCategory = animalCategory;
+		this.description = description;
+		this.gallery = gallery;
+	}
+
+
 
 	public long getProductID() {
 		return productID;
@@ -55,11 +88,11 @@ public class Product {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
@@ -87,5 +120,9 @@ public class Product {
 		this.gallery = gallery;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Product[id=%d, price=%f, name=%s, description=%s]", getProductID(),getPrice(), getName(),getDesription());
+	}
 
 }

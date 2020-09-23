@@ -1,11 +1,13 @@
 package dto;
 
+import java.math.BigDecimal;
+
 public class ProductOnlyFewColumn {
 	
-	long id;
-	String name;
-	double price;
-	AnimalCategoryDTO animal;
+	private long id;
+	private String name;
+	private BigDecimal price;
+	private AnimalCategoryDTO animal;
 
 	public ProductOnlyFewColumn(ProductDTO decode) {
 		setId(decode.getId());
@@ -38,11 +40,11 @@ public class ProductOnlyFewColumn {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 	

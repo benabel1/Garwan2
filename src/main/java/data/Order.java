@@ -6,10 +6,12 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
@@ -17,8 +19,10 @@ import javax.persistence.Table;
 @Table(name = "order_table")
 public class Order {
 	@Id
-	@GeneratedValue
 	@Column(name = "order_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ORDER_ID_SEQ")
+//	@SequenceGenerator(sequenceName = "ORDER_ID_SEQ", allocationSize = 1, name = "ORDER_ID_SEQ")
 	private long orderId;
 	
 	@Column(name = "total_price")

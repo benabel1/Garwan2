@@ -20,7 +20,7 @@ public class OrderDTO {
 	@Positive
 	private double totalPrice;
 	@NotNull
-	private UserDTO user;
+	private String user;
 	private List<OrderItemDTO> list;
 	
 //	Date time;
@@ -43,10 +43,10 @@ public class OrderDTO {
 		this.totalPrice = totalPrice;
 	}
 	
-	public UserDTO getUser() {
+	public String getUser() {
 		return user;
 	}
-	public void setUser(UserDTO user) {
+	public void setUser(String user) {
 		this.user = user;
 	}
 	public List<OrderItemDTO> getList() {

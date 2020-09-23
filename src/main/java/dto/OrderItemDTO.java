@@ -4,40 +4,55 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-import dto.OrderDTO;
-import dto.ProductDTO;
-
-
 public class OrderItemDTO {
 	
 	long orderItemID;
 	
 	@NotNull
-	private ProductDTO product;
+	private long product;
 	@NotNull
-	private OrderDTO orderr;
+	private long orderrId;
 	@PositiveOrZero
 	private long count;
 	@Positive
-	private double price;
+	private double price;	
 	
+	public OrderItemDTO() {
+		super();
+	}
+	
+	
+	public OrderItemDTO(long orderItemID, @NotNull long product, @NotNull long orderrId, @PositiveOrZero long count, @Positive double price) {
+		super();
+		this.orderItemID = orderItemID;
+		this.product = product;
+		this.orderrId = orderrId;
+		this.count = count;
+		this.price = price;
+	}
+
+	public void setOrderrId(long orderrId) {
+		this.orderrId = orderrId;
+	}
+
 	public long getOrderItemID() {
 		return orderItemID;
 	}
 	public void setOrderItemID(long oooID) {
 		this.orderItemID = oooID;
 	}
-	public ProductDTO getProduct() {
+	public long getProduct() {
 		return product;
 	}
-	public void setProduct(ProductDTO product) {
+	public void setProduct(long product) {
 		this.product = product;
 	}
-	public OrderDTO getOrderr() {
-		return orderr;
+
+	public long getOrderrId() {
+		return orderrId;
 	}
-	public void setOrder(OrderDTO orderr) {
-		this.orderr = orderr;
+	public void setOrder(long orderrId) {
+		this.orderrId = orderrId;
 	}
 	public long getCount() {
 		return count;
