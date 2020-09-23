@@ -1,5 +1,6 @@
 package api.public_api;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import api.privated_api.PrivateAdminController;
 import data.Product;
 import dto.ProductDTO;
 import dto.ProductOnlyFewColumn;
@@ -38,9 +38,7 @@ public class PublicProductEndpoint {
 		return service.getProductById(id);
 	}
 	
-	@GetMapping(value = "all",
-			consumes = MediaType.APPLICATION_JSON_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "all", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<ProductOnlyFewColumn> allProducts(
 			@RequestParam("page") Optional<Integer> page,
 			@RequestParam("pageSize") Optional<Integer> pageSize,
@@ -59,14 +57,12 @@ public class PublicProductEndpoint {
 		return aa;
 	}
 	
-	@GetMapping(value = "filterMinMax",
-			consumes = MediaType.APPLICATION_JSON_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "filterMinMax",produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<ProductOnlyFewColumn> allProductsWithPriceInRangeMinMax(
 			@RequestParam("page") Optional<Integer> page,
 			@RequestParam("pageSize") Optional<Integer> pageSize,
-			@RequestParam("minPrice") Optional<Double> minPrice,
-			@RequestParam("maxPrice") Optional<Double> maxPrice) {
+			@RequestParam("minPrice") Optional<BigDecimal> minPrice,
+			@RequestParam("maxPrice") Optional<BigDecimal> maxPrice) {
 		
 		//creating page request for column price
 		PageRequest request = PageRequest.of(
@@ -76,14 +72,55 @@ public class PublicProductEndpoint {
 				Product.PRICE_COLUMN_NAME);
 		
 		//mapping to hide some columns in page content
-		Page<Product> allProductsWithPriceInRange = service.findAll(minPrice.orElse(0d), maxPrice.orElse(10000d), request);
+		Page<Product> allProductsWithPriceInRange = service.findAll(minPrice.orElse(new BigDecimal(0d)), maxPrice.orElse(new BigDecimal(10000d)), request);
 		Page<ProductOnlyFewColumn> resultWithHiddenColumns = allProductsWithPriceInRange.map(p -> ProductMapper.mapFor(p));
 		
 		return resultWithHiddenColumns;
 	}
 	
-	@GetMapping(value = "info",
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "filterMinMaxAndNameStart",produces = MediaType.APPLICATION_JSON_VALUE)
+	public Page<ProductOnlyFewColumn> allProductsWithPriceInRangeMinMaxAndNAme(
+			@RequestParam("page") Optional<Integer> page,
+			@RequestParam("pageSize") Optional<Integer> pageSize,
+			@RequestParam("minPrice") Optional<BigDecimal> minPrice,
+			@RequestParam("maxPrice") Optional<BigDecimal> maxPrice,
+			@RequestParam("startWith") Optional<String> startWith) {
+		
+		//creating page request for column price
+		PageRequest request = PageRequest.of(
+				page.orElse(0), 
+				pageSize.orElse(10), 
+				Direction.DESC, 
+				Product.PRICE_COLUMN_NAME);
+		
+		//mapping to hide some columns in page content
+		Page<Product> allProductsWithPriceInRange = service.findAll(minPrice.orElse(new BigDecimal(0d)), maxPrice.orElse(new BigDecimal(10000d)), startWith.orElse(""), request);
+		Page<ProductOnlyFewColumn> resultWithHiddenColumns = allProductsWithPriceInRange.map(p -> ProductMapper.mapFor(p));
+		
+		return resultWithHiddenColumns;
+	}
+	
+	@GetMapping(value = "NameStart",produces = MediaType.APPLICATION_JSON_VALUE)
+	public Page<ProductOnlyFewColumn> allProductsNAme(
+			@RequestParam("page") Optional<Integer> page,
+			@RequestParam("pageSize") Optional<Integer> pageSize,
+			@RequestParam("startWith") Optional<String> startWith) {
+		
+		//creating page request for column price
+		PageRequest request = PageRequest.of(
+				page.orElse(0), 
+				pageSize.orElse(10), 
+				Direction.DESC, 
+				Product.PRICE_COLUMN_NAME);
+		
+		//mapping to hide some columns in page content
+		Page<Product> allProductsWithPriceInRange = service.aaa(startWith.orElse(""), request);
+		Page<ProductOnlyFewColumn> resultWithHiddenColumns = allProductsWithPriceInRange.map(p -> ProductMapper.mapFor(p));
+		
+		return resultWithHiddenColumns;
+	}
+	
+	@GetMapping(value = "info", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> info() {
 		return new ResponseEntity<String>(this + " is running", HttpStatus.OK);
 	}

@@ -27,10 +27,9 @@ public class PublicUserRegistrationController {
 	@Autowired
 	UserService service;
 
-	@PostMapping(value = "addUser",
-			consumes = MediaType.APPLICATION_JSON_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserDTO registrationUser(@Valid @RequestBody UserDTO user) {
+	@PostMapping(value = "addUser", produces = MediaType.APPLICATION_JSON_VALUE)
+	public UserDTO registrationUser(@RequestBody UserDTO user) {
+		logger.info("Creating new user");
 		return service.registerNewUser(user);
 	}
 
@@ -39,6 +38,12 @@ public class PublicUserRegistrationController {
 		return new ResponseEntity<String>(this + " is running", HttpStatus.OK);
 	}
 
+	/**
+	 * Handling exception in nice way
+	 * 
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(RuntimeException.class)
 	public final ResponseEntity<Exception> handleAllExceptions(RuntimeException ex) {
 		return new ResponseEntity<Exception>(ex, HttpStatus.INTERNAL_SERVER_ERROR);

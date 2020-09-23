@@ -1,5 +1,6 @@
 package services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import mappers.ProductMapper;
 import repo.GarwanProductRepository;
 
 /**
- * Service for managing products
+ * Service for products entity managment
  * 
  * @author Doma
  *
@@ -40,6 +41,8 @@ public class ProductService {
 	public List<ProductDTO> getAllProducts() {
 		List<ProductDTO> products = new ArrayList<ProductDTO>();
 		
+		logger.debug("GetAllProducts was called");
+		
 		for (Product product : productRepo.findAll()) {
 			products.add(ProductMapper.toDTO(product));
 		}
@@ -48,15 +51,31 @@ public class ProductService {
 	}
 
 	public Page<Product> findAll(PageRequest request) {
+		logger.debug("Info method was called");
 		return productRepo.findAll(request);
 	}
 	
-	public Page<Product> findAll(double minPrice, double maxPrice, PageRequest request) {
+	public Page<Product> findAll(BigDecimal minPrice, BigDecimal maxPrice, PageRequest request) {
+		logger.info("findByPriceGreatThenAndLessThan was called min=" + minPrice + ", max=" + maxPrice);
 		return productRepo.findByPriceGreatThenAndLessThan(minPrice, maxPrice, request);
 	}
 
 	public Product create(Product p) {
 		return productRepo.save(p);
+	}
+
+	public Page<Product> findAll(BigDecimal minPrice, BigDecimal maxPrice, String startWith, PageRequest request) {
+		String makeSearchpatter = startWith + "%";
+		
+		logger.info("findByPriceGreatThenAndLessThan was called min=" + minPrice + ", max=" + maxPrice + ", startWiht=" + makeSearchpatter);
+		return productRepo.findSuperFilter(minPrice, maxPrice, makeSearchpatter, request);
+		
+	}
+
+	public Page<Product> aaa(String startWith, PageRequest request) {
+		String makeSearchpatter = startWith + "%'";
+		logger.info("aaa was called startWiht=" + makeSearchpatter);
+		return productRepo.findSuperFilter(makeSearchpatter, request);
 	}
 
 }

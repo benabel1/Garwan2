@@ -16,7 +16,7 @@ import repo.UserRepositary;
 @Service
 public class UserService {
 	
-	Logger logger = LoggerFactory.getLogger(ProductService.class);
+	Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	@Autowired
 	UserRepositary userRepo;

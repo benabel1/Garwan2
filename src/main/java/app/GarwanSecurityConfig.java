@@ -52,11 +52,16 @@ public class GarwanSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.antMatchers("/**").permitAll()
+		http.
+			csrf().disable()
+			.authorizeRequests()
+//				.antMatchers("/**").permitAll()
 				//allow all public API, swagger API and H2 embedded runtime database
-				.antMatchers("auth/**","/h2-console/**", "/public/**", "/v2/api-docs").permitAll()
-				.antMatchers("/admin/**").hasAnyRole("ADMIN")
+				.antMatchers("/v2/api-docs").permitAll()
+				.antMatchers("/public/**").permitAll()
+				.antMatchers("authU/**").permitAll()
+				.antMatchers("/h2-console/**").permitAll()
+				.antMatchers("/admin/**").hasRole("ADMIN")
 //				.antMatchers("auth/**").authenticated()
 				.anyRequest().authenticated()
 //				.and()
@@ -66,12 +71,10 @@ public class GarwanSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.httpBasic();
 
-//		http.csrf().disable();
-
 		
 		//this section was found to allow H2 console during Security,
 		//just copied
-		http.csrf().ignoringAntMatchers("/h2-console/**");
+		///http.csrf().ignoringAntMatchers("/h2-console/**");
 		// this will allow frames with same origin which is much more safe
 		http.headers().frameOptions().sameOrigin();
 

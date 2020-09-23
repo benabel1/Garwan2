@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,21 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 import data.Garwan_User;
 import data.OperationResult;
 import data.Order;
-import dto.OrderDTO;
 import repo.UserRepositary;
-import request.NewOrderCreation;
 import services.OrderService;
 import services.ProductService;
 import services.UserService;
 
-/** REST Controller for authentificated / logged users 
- * 
-*/
 @RestController
-@RequestMapping(value = "/authU/orders")
-public class PrivateAuthController {
+@RequestMapping(value = "auth/ordersV2")
+public class PrivateAuthWithEntityController {
 	
-	Logger logger = LoggerFactory.getLogger(PrivateAuthController.class);
+	Logger logger = LoggerFactory.getLogger(PrivateAuthWithEntityController.class);
 
 	@Autowired
 	OrderService orderService;
@@ -59,7 +53,7 @@ public class PrivateAuthController {
 	 * @return
 	 */
 	@PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> createOrder(@RequestBody OrderDTO dto, @CurrentSecurityContext(expression = "authentication.name") String username) {
+	public ResponseEntity<String> createOrder(@Valid @RequestBody Order dto, @CurrentSecurityContext(expression = "authentication.name") String username) {
 
 		OperationResult<Order, OrderService> created;
 
@@ -69,7 +63,7 @@ public class PrivateAuthController {
 		} else {
 			Garwan_User user = repo.findByUsername(username);
 			if(user != null) {
-				created =  orderService.createOrderForUser(dto, user);
+				created =  orderService.createOrder(dto);
 			}
 			else {
 				logger.info("User was not found");
@@ -77,56 +71,72 @@ public class PrivateAuthController {
 			}
 		}
 
-		return new ResponseEntity<String>(created + " was craeted for: ", HttpStatus.CREATED);
+		return new ResponseEntity<String>(created + " was craeted for: ", HttpStatus.OK);
 	}
 	
 	/**
-	 * Return all order created by for specific user
+	 * Create new order for logged user
 	 * 
-	 * @param username- specific user
+	 * @param dto
+	 * @param username
+	 * @return
+	 */
+	@PostMapping(value = "createNonSecure", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> createOrderNoneUser(@RequestBody Order dto) {
+
+		OperationResult<Order, OrderService> created;
+
+		created =  orderService.createOrder(dto);
+
+		return new ResponseEntity<String>(created + " was craeted for: ", HttpStatus.OK);
+	}
+
+	/**
+	 * Return all order created by current authenticated user
+	 * 
+	 * @param username- current username of authenticated user
 	 * 
 	 * @return list of orders
 	 */
-	@GetMapping(value = "myOrdersRaw/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<OrderDTO>> allOrdersRaw(@PathVariable("username") String username) {
-		List<OrderDTO> result = new ArrayList<OrderDTO>();
+	@GetMapping(value = "myOrders",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Order>> allOrders(@CurrentSecurityContext(expression = "authentication.name") String username) {
+		List<Order> result = new ArrayList<Order>();
 		
 		if (username != null) {
 			Garwan_User user = repo.findByUsername(username);
-			result = orderService.getAllOrdersByUser(user);
+			result = orderService.getAllOrdersByUserRaw(user);
 		}
 
-		return new ResponseEntity<List<OrderDTO>>(result, HttpStatus.OK);
+		return new ResponseEntity<List<Order>>(result, HttpStatus.OK);
 	}
 	
 	/**
-	 * PSS, this troll method help you with generation of RequestBody
+	 * Return all order created by current authenticated user
 	 * 
-	 * @return example if can be found
+	 * @param username- current username of authenticated user
+	 * 
+	 * @return list of orders
 	 */
-	@GetMapping(value = "help", produces = MediaType.APPLICATION_JSON_VALUE)
-	public NewOrderCreation trollPleaseHelpMe() {
-		//TODO Bad manner, whole method remove or do some cleaning
-		String username = "ja";
-		NewOrderCreation example = new NewOrderCreation();
+	@GetMapping(value = "myOrdersRaw",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Order>> allOrdersRaw() {
+		List<Order> result = new ArrayList<Order>();
+		Garwan_User user = repo.findByUsername("ja");
 		
-		if (username != null) {
-			Garwan_User user = repo.findByUsername(username);
-			List<OrderDTO> result = orderService.getAllOrdersByUser(user);
-			if (result.size() > 0) {
-				example.setOrder(result.get(0));
-			}
-			
+		if (user != null) {
+			result = orderService.getAllOrdersByUserRaw(user);
 		}
-		
-		return example;
+
+		return new ResponseEntity<List<Order>>(result, HttpStatus.OK);
 	}
 
 	/**
 	 * Default operation for check if Controller is working
 	 * @return
 	 */
-	@GetMapping(value = "info", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "info",
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> info() {
 		return new ResponseEntity<String>(this + " is running", HttpStatus.OK);
 	}
